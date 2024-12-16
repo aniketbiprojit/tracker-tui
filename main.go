@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -12,14 +14,14 @@ type TrackingData struct {
 
 type Tracking struct {
 	active *string
-	tracks map[string]TrackingData
+	tracks map[string][]TrackingData
 	cursor int
 }
 
 func initialTracking() Tracking {
 	return Tracking{
 		active: nil,
-		tracks: make(map[string]TrackingData),
+		tracks: make(map[string][]TrackingData),
 		cursor: 0,
 	}
 }
@@ -40,7 +42,11 @@ func (t Tracking) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (t Tracking) View() string {
-	s := ""
+	s := "Options:"
+
+	s += "\n1. New Tracking."
+	s += "\n2. List Tracking."
+	s += "\n3. Start Tracking."
 
 	s += "\nPress q to quit."
 	return s
@@ -50,5 +56,6 @@ func main() {
 	p := tea.NewProgram(initialTracking())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Damn gurrrrrl, what did you do. %v", err)
+		os.Exit(420)
 	}
 }

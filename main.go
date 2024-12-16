@@ -22,12 +22,19 @@ func DefaultStyle() lipgloss.Style {
 	return lipgloss.NewStyle()
 }
 
+type Project struct {
+	client string
+	name   string
+}
+
 type Model struct {
 	cursor   int
 	width    int
 	height   int
 	style    *lipgloss.Style
+	projects []Project
 	tracking Tracking
+	err      error
 }
 
 func initialTracking() Tracking {
@@ -75,10 +82,11 @@ func (t Model) View() string {
 func main() {
 	style := DefaultStyle()
 	p := tea.NewProgram(Model{
-		cursor: 0,
-		width:  0,
-		height: 0,
-		style:  &style,
+		cursor:   0,
+		width:    0,
+		height:   0,
+		style:    &style,
+		projects: make([]Project, 0),
 	})
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Damn gurrrrrl, what did you do. %v", err)

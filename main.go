@@ -5,6 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type TrackingData struct {
@@ -15,33 +16,52 @@ type TrackingData struct {
 type Tracking struct {
 	active *string
 	tracks map[string][]TrackingData
-	cursor int
+}
+
+func DefaultStyle() lipgloss.Style {
+	return lipgloss.NewStyle()
+}
+
+type Model struct {
+	cursor   int
+	width    int
+	height   int
+	style    *lipgloss.Style
+	tracking Tracking
 }
 
 func initialTracking() Tracking {
 	return Tracking{
 		active: nil,
 		tracks: make(map[string][]TrackingData),
-		cursor: 0,
 	}
 }
 
-func (t Tracking) Init() tea.Cmd {
+func (t Model) Init() tea.Cmd {
 	return nil
 }
 
-func (t Tracking) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (t Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return t, tea.Quit
 		}
+	case tea.WindowSizeMsg:
+		t.width = msg.Width
+		t.height = msg.Height
 	}
+
 	return t, nil
 }
 
-func (t Tracking) View() string {
+func (t Model) View() string {
+
+	if t.width == 0 {
+		return "loading..."
+	}
+
 	s := "Options:"
 
 	s += "\n1. New Tracking."
@@ -53,7 +73,13 @@ func (t Tracking) View() string {
 }
 
 func main() {
-	p := tea.NewProgram(initialTracking())
+	style := DefaultStyle()
+	p := tea.NewProgram(Model{
+		cursor: 0,
+		width:  0,
+		height: 0,
+		style:  &style,
+	})
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Damn gurrrrrl, what did you do. %v", err)
 		os.Exit(420)

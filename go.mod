@@ -1,4 +1,4 @@
-module tracker
+module tracker-tui
 
 go 1.23.4
 

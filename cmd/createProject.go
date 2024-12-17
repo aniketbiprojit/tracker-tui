@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"tracker/cmd/tui"
 
 	"github.com/spf13/cobra"
 )
@@ -14,11 +15,18 @@ var createProjectCmd = &cobra.Command{
 	Use:   "create-project",
 	Short: "Create a new project",
 	Long: `A project is what is tracked in time tracker. It is base for all data.
-
-Usage: tracker create-
+Usage: tracker create-project project-name
 	`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("createProject called")
+
+		projectName := args[0]
+		fmt.Printf("creating project: %s\n", projectName)
+
+		m := tui.GetModel()
+
+		m.AddProject(projectName)
+
 	},
 }
 

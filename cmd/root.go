@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	boa "github.com/elewis787/boa"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -16,10 +17,13 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() *cobra.Command {
+	rootCmd.SetUsageFunc(boa.UsageFunc)
+	rootCmd.SetHelpFunc(boa.HelpFunc)
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
+
 	return rootCmd
 }
 

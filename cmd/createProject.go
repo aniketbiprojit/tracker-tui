@@ -26,6 +26,7 @@ Usage: tracker create-project project-name
 		m := tui.GetModel()
 
 		m.AddProject(projectName)
+		m.Render = true
 	},
 }
 

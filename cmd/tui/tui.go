@@ -1,6 +1,12 @@
 package tui
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"os"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type TrackedData struct {
 	started int
@@ -18,6 +24,8 @@ type model struct {
 	trackedData   map[int][]TrackedData
 	projects      []Project
 	Err           error
+	Render        bool
+	ViewString    string
 }
 
 func (m model) AddProject(projectName string) {
@@ -54,10 +62,45 @@ func init() {
 		trackedData:   make(map[int][]TrackedData),
 		projects:      make([]Project, 0),
 		Err:           nil,
+		Render:        false,
+		ViewString:    "",
 	}
 	modelData.AddProject("some-project")
 }
 
 func GetModel() *model {
 	return &modelData
+}
+
+func (m model) Init() tea.Cmd {
+	// Just return `nil`, which means "no I/O right now, please."
+	return nil
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return m, tea.Quit
+		}
+	}
+
+	return m, nil
+}
+
+func (m model) View() string {
+	s := m.ViewString
+
+	s += "\nPress q to quit..."
+
+	return s
+}
+
+func InitTea() {
+	p := tea.NewProgram(modelData)
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
 }

@@ -18,6 +18,8 @@ type Project struct {
 	Id   int
 }
 
+type HandleViewFunc func(msg tea.Msg) (tea.Model, tea.Cmd)
+
 type model struct {
 	command       string
 	activeProject int
@@ -26,6 +28,7 @@ type model struct {
 	Err           error
 	Render        bool
 	ViewString    string
+	HandleView    HandleViewFunc
 }
 
 func (m model) AddProject(projectName string) {
@@ -64,6 +67,7 @@ func init() {
 		Err:           nil,
 		Render:        false,
 		ViewString:    "",
+		HandleView:    nil,
 	}
 	modelData.AddProject("some-project")
 }
@@ -84,6 +88,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
+	}
+
+	if m.HandleView != nil {
+
+		return m.HandleView(msg)
 	}
 
 	return m, nil

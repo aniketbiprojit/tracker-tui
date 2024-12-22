@@ -4,13 +4,24 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"tracker/cmd/tui"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
+)
+
+const (
+	defaultWidth = 80
+
+	//default colors
+	purple    = `#7e2fcc`
+	darkGrey  = `#353C3B`
+	lightTeal = `#03DAC5`
+	darkTeal  = `#01A299`
+	white     = `#e5e5e5`
+	red       = `#FF3333`
 )
 
 // createProjectCmd represents the createProject command
@@ -23,20 +34,19 @@ Usage: tracker create-project project-name
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		focusedStyle := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FAFAFA")).
-			Background(lipgloss.Color("#005F87")).
-			Padding(0, 1)
-		cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00"))
+		TextInputStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(white)).
+			Padding(0, 1).
+			Margin(1, 0)
+
+		CursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(lightTeal))
+
 		ti := textinput.New()
 		ti.Placeholder = "Project name here"
 		ti.Focus()
 		ti.CharLimit = 156
 		ti.Width = 20
-
-		ti.CursorStyle = cursorStyle
-
-		ti.TextStyle = focusedStyle
+		ti.TextStyle = TextInputStyle
+		ti.CursorStyle = CursorStyle
 
 		m := tui.GetModel()
 		if len(args) == 0 {
@@ -53,15 +63,29 @@ Usage: tracker create-project project-name
 					}
 				}
 
-				// We handle errors just like any other message
 				ti, returnCmd = ti.Update(msg)
 
 				return returnCmd
 			}
 
+			BorderStyle := lipgloss.NewStyle().
+				Padding(0, 1, 0, 1).
+				Width(defaultWidth).
+				BorderForeground(lipgloss.AdaptiveColor{Light: darkTeal, Dark: lightTeal}).
+				Border(lipgloss.ThickBorder())
+
+			TitleStyle := lipgloss.NewStyle().Bold(true).
+				// Width(defaultWidth - 4).
+				Align(lipgloss.Center)
 			m.HandleView = func() string {
-				s := fmt.Sprintf("%s%s\n", "Please enter project name you want to add?\n", ti.View())
-				return s
+
+				title := TitleStyle.Render("Please enter project name you want to add?\n")
+				inputView := ti.View()
+				verticalView := lipgloss.JoinVertical(lipgloss.Left, title, inputView)
+
+				border := BorderStyle.Render(verticalView)
+
+				return border + "\nPress q to exit"
 			}
 		}
 

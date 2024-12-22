@@ -9,6 +9,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 )
 
@@ -22,11 +23,20 @@ Usage: tracker create-project project-name
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
 
+		focusedStyle := lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#FAFAFA")).
+			Background(lipgloss.Color("#005F87")).
+			Padding(0, 1)
+		cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00"))
 		ti := textinput.New()
-		ti.Placeholder = "Pikachu"
+		ti.Placeholder = "Project name here"
 		ti.Focus()
 		ti.CharLimit = 156
 		ti.Width = 20
+
+		ti.CursorStyle = cursorStyle
+
+		ti.TextStyle = focusedStyle
 
 		m := tui.GetModel()
 		if len(args) == 0 {

@@ -6,9 +6,11 @@ import (
 )
 
 func main() {
-	cmd.Execute()
+	executor := cmd.Execute()
 
 	if tui.GetModel().Render {
-		tui.InitTea()
+		if executor.HandleInit != nil {
+			tui.InitTea(executor.HandleInit)
+		}
 	}
 }

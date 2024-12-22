@@ -18,8 +18,9 @@ type Project struct {
 	Id   int
 }
 
-type HandleViewFunc func(msg tea.Msg) (tea.Model, tea.Cmd)
-
+type HandleUpdateFunc func(msg tea.Msg) tea.Cmd
+type HandleInitFunc func() tea.Cmd
+type HandleViewFunc func() string
 type model struct {
 	command       string
 	activeProject int
@@ -28,6 +29,8 @@ type model struct {
 	Err           error
 	Render        bool
 	ViewString    string
+	HandleInit    HandleInitFunc
+	HandleUpdate  HandleUpdateFunc
 	HandleView    HandleViewFunc
 }
 
@@ -59,6 +62,7 @@ func (m model) AddProject(projectName string) {
 var modelData = model{}
 
 func init() {
+
 	modelData = model{
 		command:       "",
 		activeProject: -1,
@@ -67,7 +71,7 @@ func init() {
 		Err:           nil,
 		Render:        false,
 		ViewString:    "",
-		HandleView:    nil,
+		HandleUpdate:  nil,
 	}
 	modelData.AddProject("some-project")
 }
@@ -78,10 +82,14 @@ func GetModel() *model {
 
 func (m model) Init() tea.Cmd {
 	// Just return `nil`, which means "no I/O right now, please."
+	if m.HandleInit != nil {
+		return m.HandleInit()
+	}
 	return nil
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -90,15 +98,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	if m.HandleView != nil {
-
-		return m.HandleView(msg)
+	if m.HandleUpdate != nil {
+		returnCmd := m.HandleUpdate(msg)
+		return m, returnCmd
 	}
 
-	return m, nil
+	return m, cmd
 }
 
 func (m model) View() string {
+
+	if m.HandleView != nil {
+		return m.HandleView()
+	}
+
 	s := m.ViewString
 
 	s += "\nPress q to quit..."
@@ -106,7 +119,8 @@ func (m model) View() string {
 	return s
 }
 
-func InitTea() {
+func InitTea(handleInit HandleInitFunc) {
+	modelData.HandleInit = handleInit
 	p := tea.NewProgram(modelData)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)

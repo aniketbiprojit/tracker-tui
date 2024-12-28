@@ -10,7 +10,7 @@ import (
 
 func ConnectToDatabase() *sql.DB {
 
-	url := fmt.Sprintf("libsql://tracker-aniketbiprojit.aws-eu-west-1.turso.io?authToken=%s", os.Getenv("TURSO_TOKEN"))
+	url := fmt.Sprintf("%s?authToken=%s", os.Getenv("TURSO_URL"), os.Getenv("TURSO_TOKEN"))
 
 	db, err := sql.Open("libsql", url)
 	if err != nil {

@@ -5,7 +5,12 @@ variable "token" {
   default = getenv("TURSO_TOKEN")
 }
 
+variable "url" {
+  type = string
+  default = getenv("TURSO_URL")
+}
+
 env "turso" {
-  url     = "libsql://tracker-aniketbiprojit.aws-eu-west-1.turso.io?authToken=${var.token}"
+  url     = "${var.url}?authToken=${var.token}"
 }
 

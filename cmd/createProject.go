@@ -85,13 +85,10 @@ Usage: tracker create-project project-name
 
 				border := BorderStyle.Render(verticalView)
 
-				return border + "\nPress q to exit"
+				return border + "\nPress ctrl+c to exit"
 			}
 		}
 
-		// projectName := args[0]
-
-		// m.AddProject(projectName)
 		m.Render = true
 	},
 }

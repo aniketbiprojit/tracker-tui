@@ -114,7 +114,7 @@ func (m model) View() string {
 
 	s := m.ViewString
 
-	s += "\nPress q to quit..."
+	s += "\nPress ctrl+c to quit..."
 
 	return s
 }

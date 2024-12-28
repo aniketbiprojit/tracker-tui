@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"tracker/cmd"
-	"tracker/cmd/db"
 	"tracker/cmd/tui"
+	"tracker/db"
 )
 
 func main() {
@@ -16,6 +16,8 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to execute query: %v\n", err)
 		os.Exit(1)
+	} else {
+		fmt.Println("Connected to database.")
 	}
 	defer rows.Close()
 

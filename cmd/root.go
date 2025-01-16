@@ -37,5 +37,5 @@ func Execute() *CommandHolder {
 }
 
 func init() {
-	rootHolder.rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootHolder.rootCmd.Flags().BoolP("help", "h", false, "Help message for toggle")
 }

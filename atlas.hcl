@@ -1,5 +1,3 @@
-
-
 variable "token" {
   type    = string
   default = getenv("TURSO_TOKEN")

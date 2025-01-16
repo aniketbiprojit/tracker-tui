@@ -59,6 +59,7 @@ Usage: tracker create-project project-name
 				case tea.KeyMsg:
 					switch msg.Type {
 					case tea.KeyEnter:
+						m.AddProject(ti.Value())
 						return tea.Quit
 					}
 				}
@@ -78,7 +79,6 @@ Usage: tracker create-project project-name
 				// Width(defaultWidth - 4).
 				Align(lipgloss.Center)
 			m.HandleView = func() string {
-
 				title := TitleStyle.Render("Please enter project name you want to add?\n")
 				inputView := ti.View()
 				verticalView := lipgloss.JoinVertical(lipgloss.Left, title, inputView)
@@ -89,6 +89,7 @@ Usage: tracker create-project project-name
 			}
 		}
 
+		// m.AddProject(projectName)
 		m.Render = true
 	},
 }

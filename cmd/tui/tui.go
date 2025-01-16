@@ -56,6 +56,8 @@ func (m model) AddProject(projectName string) {
 		Name: projectName,
 	})
 
+	fmt.Printf("Project `%s` added with id %d\n", projectName, Id)
+
 	return
 }
 
@@ -73,7 +75,11 @@ func init() {
 		ViewString:    "",
 		HandleUpdate:  nil,
 	}
-	modelData.AddProject("some-project")
+	modelData.projects = append(modelData.projects, Project{
+		Id:   1,
+		Name: "new-project",
+	})
+
 }
 
 func GetModel() *model {
@@ -107,6 +113,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
+
+	if m.Err != nil {
+		s := m.Err.Error()
+		fmt.Println(s)
+		return s
+	}
 
 	if m.HandleView != nil {
 		return m.HandleView()

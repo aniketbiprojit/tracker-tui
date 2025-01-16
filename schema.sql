@@ -1,10 +1,18 @@
-CREATE TABLE projects (
+CREATE TABLE client (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name INTEGER NOT NULL,
-    tracked_time_in_seconds INTEGER NOT NULL
+    client_name TEXT NOT NULL
 );
 
-CREATE TABLE time_tracking (
+CREATE TABLE projects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    tracked_time_in_seconds INTEGER NOT NULL,
+    client_id INTEGER NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT 0,
+    FOREIGN KEY (client_id) REFERENCES client(id)
+);
+
+CREATE TABLE time_trackings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
@@ -12,4 +20,3 @@ CREATE TABLE time_tracking (
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
-CREATE TABLE client {}

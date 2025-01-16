@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"tracker/db"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -56,6 +57,7 @@ func (m model) AddProject(projectName string) (err error) {
 		Id:   Id,
 		Name: projectName,
 	})
+	db.AddProjectToDatabase(projectName)
 
 	fmt.Printf("Project `%s` added with id %d\n", projectName, Id)
 

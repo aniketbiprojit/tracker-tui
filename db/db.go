@@ -26,3 +26,10 @@ func ConnectToDatabase() *sql.DB {
 
 	return db
 }
+
+func AddProjectToDatabase(projectName string) (err error) {
+	db := ConnectToDatabase()
+	_, err = db.Query(
+		fmt.Sprintf("INSERT INTO projects (name, tracked_time_in_seconds, client_id, active) VALUES ('%s', 0, 1, 0) RETURNING *;", projectName))
+	return err
+}

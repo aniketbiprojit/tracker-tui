@@ -11,3 +11,5 @@ CREATE TABLE time_tracking (
     project_id INTEGER NOT NULL,
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
+
+CREATE TABLE client {}

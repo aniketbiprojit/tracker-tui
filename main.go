@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"tracker/cmd"
+	_ "tracker/cmd/project"
 	"tracker/cmd/tui"
 	"tracker/db"
 )

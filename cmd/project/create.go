@@ -1,10 +1,11 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package project
 
 import (
 	"fmt"
+	cmd "tracker/cmd"
 	"tracker/cmd/tui"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -102,9 +103,9 @@ Usage: tracker create-project project-name
 }
 
 func init() {
-	rootHolder.rootCmd.AddCommand(createProjectCmd)
-	rootHolder.CurrentCommand = "create-project"
-	rootHolder.HandleInit = func() tea.Cmd {
+	cmd.RootHolder.RootCmd.AddCommand(createProjectCmd)
+	cmd.RootHolder.CurrentCommand = "create-project"
+	cmd.RootHolder.HandleInit = func() tea.Cmd {
 		return textinput.Blink
 	}
 }

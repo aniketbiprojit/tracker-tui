@@ -12,13 +12,13 @@ import (
 )
 
 type CommandHolder struct {
-	rootCmd        *cobra.Command
+	RootCmd        *cobra.Command
 	CurrentCommand string
 	HandleInit     tui.HandleInitFunc
 }
 
-var rootHolder = &CommandHolder{
-	rootCmd: &cobra.Command{
+var RootHolder = &CommandHolder{
+	RootCmd: &cobra.Command{
 		Use:   "tracker",
 		Short: "A time tracker TUI",
 		Long:  "A basic time tracker application for personal use",
@@ -26,16 +26,16 @@ var rootHolder = &CommandHolder{
 }
 
 func Execute() *CommandHolder {
-	rootHolder.rootCmd.SetUsageFunc(boa.UsageFunc)
-	rootHolder.rootCmd.SetHelpFunc(boa.HelpFunc)
-	err := rootHolder.rootCmd.Execute()
+	RootHolder.RootCmd.SetUsageFunc(boa.UsageFunc)
+	RootHolder.RootCmd.SetHelpFunc(boa.HelpFunc)
+	err := RootHolder.RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 
-	return rootHolder
+	return RootHolder
 }
 
 func init() {
-	rootHolder.rootCmd.Flags().BoolP("help", "h", false, "Help message for toggle")
+	RootHolder.RootCmd.Flags().BoolP("help", "h", false, "Help message for toggle")
 }

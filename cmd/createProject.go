@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"tracker/cmd/tui"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -26,7 +27,7 @@ const (
 
 // createProjectCmd represents the createProject command
 var createProjectCmd = &cobra.Command{
-	Use:   "create-project project-name",
+	Use:   "project create <project-name>",
 	Short: "Create a new project",
 	Long: `A project is what is tracked in time tracker. It is base for all data.
 Usage: tracker create-project project-name
@@ -49,7 +50,7 @@ Usage: tracker create-project project-name
 		ti.CursorStyle = CursorStyle
 
 		m := tui.GetModel()
-		if len(args) == 0 {
+		if len(args) == 1 {
 
 			m.Render = true
 			m.HandleUpdate = func(msg tea.Msg) tea.Cmd {
@@ -59,7 +60,10 @@ Usage: tracker create-project project-name
 				case tea.KeyMsg:
 					switch msg.Type {
 					case tea.KeyEnter:
-						m.AddProject(ti.Value())
+						err := m.AddProject(ti.Value())
+						if err != nil {
+							return nil
+						}
 						return tea.Quit
 					}
 				}
@@ -79,6 +83,9 @@ Usage: tracker create-project project-name
 				// Width(defaultWidth - 4).
 				Align(lipgloss.Center)
 			m.HandleView = func() string {
+				if m.Err != nil {
+					fmt.Println("Error: ", m.Err)
+				}
 				title := TitleStyle.Render("Please enter project name you want to add?\n")
 				inputView := ti.View()
 				verticalView := lipgloss.JoinVertical(lipgloss.Left, title, inputView)

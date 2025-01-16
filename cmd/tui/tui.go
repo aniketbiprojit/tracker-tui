@@ -27,6 +27,7 @@ type model struct {
 	trackedData   map[int][]TrackedData
 	projects      []Project
 	Err           error
+	ErrPrinted    bool
 	Render        bool
 	ViewString    string
 	HandleInit    HandleInitFunc
@@ -34,7 +35,7 @@ type model struct {
 	HandleView    HandleViewFunc
 }
 
-func (m model) AddProject(projectName string) {
+func (m model) AddProject(projectName string) (err error) {
 
 	found := false
 	for _, val := range m.projects {
@@ -58,7 +59,7 @@ func (m model) AddProject(projectName string) {
 
 	fmt.Printf("Project `%s` added with id %d\n", projectName, Id)
 
-	return
+	return nil
 }
 
 var modelData = model{}
@@ -74,10 +75,11 @@ func init() {
 		Render:        false,
 		ViewString:    "",
 		HandleUpdate:  nil,
+		ErrPrinted:    false,
 	}
 	modelData.projects = append(modelData.projects, Project{
 		Id:   1,
-		Name: "new-project",
+		Name: "project",
 	})
 
 }
@@ -95,6 +97,12 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+	if m.ErrPrinted {
+
+		fmt.Println("Printed ")
+		return m, tea.Quit
+	}
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -115,9 +123,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 
 	if m.Err != nil {
-		s := m.Err.Error()
-		fmt.Println(s)
-		return s
+		// m.ErrPrinted = true
+
+		fmt.Println("Error: ", m.Err)
+
+		return "Error: " + m.Err.Error() + "\n\n\n"
 	}
 
 	if m.HandleView != nil {

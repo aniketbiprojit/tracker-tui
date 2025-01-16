@@ -19,7 +19,7 @@ type CommandHolder struct {
 
 var rootHolder = &CommandHolder{
 	rootCmd: &cobra.Command{
-		Use:   "start",
+		Use:   "tracker",
 		Short: "A time tracker TUI",
 		Long:  "A basic time tracker application for personal use",
 	},
